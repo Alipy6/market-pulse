@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Market Pulse</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LIVE MARKET SNAPSHOT</p>
+          <h1>Market <span>Pulse</span></h1>
+        </div>
+        <a class="settings-link" href="options.html" target="_blank" aria-label="Open settings">⚙</a>
+      </header>
+
+      <p id="status" class="status" aria-live="polite">Loading cached prices…</p>
+
+      <section class="panel gold-panel" aria-labelledby="gold-heading">
+        <div class="panel-heading">
+          <h2 id="gold-heading">Gold</h2>
+          <span class="asset-chip">XAU/USD</span>
+        </div>
+        <div class="primary-price" id="gold-ounce">—</div>
+        <p class="price-label">per troy ounce</p>
+        <dl class="stats-grid">
+          <div><dt>24K / gram</dt><dd id="gold-24k">—</dd></div>
+          <div><dt>18K / gram</dt><dd id="gold-18k-usd">—</dd></div>
+        </dl>
+      </section>
+
+      <section class="panel toman-panel" aria-labelledby="toman-heading">
+        <div class="panel-heading">
+          <h2 id="toman-heading">Iran market</h2>
+          <span class="asset-chip">TOMAN</span>
+        </div>
+        <div id="toman-content">
+          <div class="row"><span>USDT</span><strong id="usdt-toman">—</strong><span id="usdt-change" class="change">—</span></div>
+          <div class="toman-gold"><span>18K gold / gram</span><strong id="gold-18k-toman">—</strong></div>
+        </div>
+        <p id="toman-note" class="subtle">Add your BRSAPI key in Settings to show Toman prices.</p>
+      </section>
+
+      <section class="panel crypto-panel" aria-labelledby="crypto-heading">
+        <div class="panel-heading">
+          <h2 id="crypto-heading">Crypto</h2>
+          <span class="asset-chip">USD</span>
+        </div>
+        <div id="crypto-container"></div>
+      </section>
+
+      <footer>
+        <span id="last-updated">Not updated yet</span>
+        <button id="refresh-button" type="button">↻ Refresh</button>
+      </footer>
+    </main>
+    <script src="utils.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

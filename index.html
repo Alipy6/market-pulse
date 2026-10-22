@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Market Pulse — Ali Portfolio</title>
+  <meta name="description" content="Market Pulse Chrome extension — a fast market snapshot for gold, Toman/USDT and customizable crypto prices.">
+  <style>
+    :root{color-scheme:dark;--bg:#08111b;--surface:#0f2436;--border:#29445a;--text:#f5f7fa;--muted:#9fb0c1;--gold:#f7c842;--green:#10b981}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#142d41 0,#08111b 45%);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);min-height:100vh}
+    main{width:min(920px,calc(100% - 32px));margin:0 auto;padding:72px 0}.back{color:var(--muted);text-decoration:none}.back:hover{color:var(--gold)}
+    .eyebrow{margin-top:56px;color:var(--green);font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.hero h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1;margin:12px 0}.hero h1 span{color:var(--gold)}.hero p{max-width:720px;color:var(--muted);font-size:1.08rem;line-height:1.75}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 52px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid var(--border)}.primary{background:var(--gold);color:#111827;border-color:var(--gold)}.secondary{color:var(--text);background:rgba(255,255,255,.03)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:rgba(15,36,54,.82);border:1px solid var(--border);border-radius:16px;padding:22px}.card h2{font-size:1.05rem;margin:0 0 10px}.card p{color:var(--muted);line-height:1.65;margin:0}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}.tag{padding:7px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:.82rem}.footer{margin-top:56px;color:var(--muted);font-size:.9rem}
+  </style>
+</head>
+<body>
+<main>
+  <a class="back" href="../../#projects">← Back to portfolio</a>
+  <section class="hero">
+    <div class="eyebrow">Chrome Extension · Manifest V3</div>
+    <h1>Market <span>Pulse</span></h1>
+    <p>A compact market dashboard built for the Chrome toolbar. It combines global gold, Iranian Toman/USDT data and a user-configurable crypto watchlist while keeping the popup fast with background caching and resilient API handling.</p>
+    <div class="actions">
+      <a class="btn primary" href="market-pulse.zip" download>Download Extension</a>
+      <a class="btn secondary" href="../../#projects">Portfolio</a>
+    </div>
+  </section>
+  <section class="grid">
+    <article class="card"><h2>Gold</h2><p>XAU/USD per troy ounce with 24K and 18K gram conversions.</p></article>
+    <article class="card"><h2>Iran Market</h2><p>USDT/Toman and 18K gold pricing when a personal BRSAPI key is configured.</p></article>
+    <article class="card"><h2>Crypto Watchlist</h2><p>Choose up to three coins, search by name/symbol/ID, reorder them and restore defaults.</p></article>
+    <article class="card"><h2>Resilient Data Flow</h2><p>Background refresh, local cache, separate API requests and safe handling of temporary failures and rate limits.</p></article>
+  </section>
+  <div class="tags"><span class="tag">JavaScript</span><span class="tag">Chrome MV3</span><span class="tag">CoinGecko</span><span class="tag">Chrome Storage</span><span class="tag">API Caching</span></div>
+  <div class="footer">Built as a practical market-monitoring browser extension.</div>
+</main>
+</body>
+</html>

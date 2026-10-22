@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Market Pulse",
+  "version": "1.1.0",
+  "description": "Live gold (XAU/USD), Iranian Toman (USDT & 18K Gold), and customizable crypto prices in a fast toolbar popup.",
+  "action": {
+    "default_title": "Market Pulse",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://api.gold-api.com/*",
+    "https://api.brsapi.ir/*",
+    "https://api.coingecko.com/*",
+    "https://api.tetherland.com/*",
+    "https://api.wallex.ir/*",
+    "https://api.nobitex.ir/*"
+  ]
+}

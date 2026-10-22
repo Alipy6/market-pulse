@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Market Pulse settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="settings-card">
+      <p class="eyebrow">MARKET PULSE</p>
+      <h1>Extension Settings</h1>
+
+      <section class="settings-section">
+        <h2>Crypto Watchlist</h2>
+        <p>Customize up to 3 cryptocurrencies to display in Market Pulse.</p>
+
+        <div class="watchlist-header">
+          <span id="watchlist-count" class="count-badge">0 / 3 selected</span>
+          <button id="restore-defaults" class="secondary text-button" type="button">Restore defaults</button>
+        </div>
+
+        <ul id="watchlist-list" class="watchlist-list" aria-label="Crypto watchlist">
+          <!-- Dynamically populated -->
+        </ul>
+
+        <div id="add-container" class="add-container">
+          <button id="show-add-btn" class="secondary full-width" type="button">+ Add cryptocurrency</button>
+        </div>
+
+        <div id="search-modal" class="search-box hidden">
+          <label for="coin-search-input">Search cryptocurrency</label>
+          <div class="search-input-wrapper">
+            <input id="coin-search-input" type="search" placeholder="Type name or symbol (e.g. solana, SOL)..." autocomplete="off" />
+            <button id="close-search-btn" class="secondary text-button" type="button" aria-label="Close search">✕</button>
+          </div>
+          <div id="search-results" class="search-results" aria-live="polite">
+            <!-- Search results list -->
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-section divider">
+        <h2>Iran market settings</h2>
+        <p>Paste your own BRSAPI key to enable the USDT/Toman and 18K-gold-in-Toman cards.</p>
+
+        <label for="brsapi-key">BRSAPI key</label>
+        <input id="brsapi-key" type="password" autocomplete="off" placeholder="Paste your key" />
+        <p class="hint">Saved only in this Chrome profile through <code>chrome.storage.local</code>; it is never bundled into the extension.</p>
+
+        <div class="actions">
+          <button id="save" type="button">Save key</button>
+          <button id="remove" class="secondary" type="button">Remove key</button>
+        </div>
+      </section>
+
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <script src="utils.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

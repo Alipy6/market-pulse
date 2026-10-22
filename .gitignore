@@ -1,0 +1,4 @@
+# User-specific and generated files
+*.zip
+*.crx
+node_modules/
