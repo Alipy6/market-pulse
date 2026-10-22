@@ -16,6 +16,7 @@ assert.equal(
   4500000,
   "18K Toman price uses the 24K gram price × USDT/Toman × 0.75 purity formula"
 );
+assert.equal(calculate18kGoldToman(100, 0), null, "Zero Toman rate must return null instead of 0");
 assert.equal(calculate18kGoldToman("invalid", 60000), null);
 
 assert.equal(formatUsd(2735.6), "$2,735.60");

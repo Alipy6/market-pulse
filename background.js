@@ -4,6 +4,9 @@ importScripts("utils.js");
 const GOLD_URL = "https://api.gold-api.com/price/XAU";
 const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3/simple/price";
 const BRSAPI_BASE_URL = "https://Api.BrsApi.ir/Market/Gold_Currency.php";
+const TETHERLAND_URL = "https://api.tetherland.com/currencies";
+const WALLEX_URL = "https://api.wallex.ir/v1/markets";
+const NOBITEX_URL = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls";
 
 const CACHE_KEY = "marketPulseCache";
 const BRSAPI_KEY_STORAGE_KEY = "brsApiKey";
@@ -40,7 +43,7 @@ async function fetchGold() {
   const data = await fetchJson(GOLD_URL);
   const ounceUsd = MarketPulseUtils.toFiniteNumber(data?.price);
 
-  if (ounceUsd === null) {
+  if (ounceUsd === null || ounceUsd <= 0) {
     throw new Error("Gold API response did not contain a valid price.");
   }
 
@@ -87,27 +90,78 @@ function requestFailureLabel(error) {
   return "network error";
 }
 
+async function fetchFallbackToman() {
+  // 1. TetherLand public endpoint (Toman)
+  try {
+    const data = await fetchJson(TETHERLAND_URL, 6000);
+    const usdt = data?.data?.currencies?.USDT;
+    const price = MarketPulseUtils.toFiniteNumber(usdt?.price);
+    if (price !== null && price > 1000) {
+      return {
+        usdtToman: price,
+        changePercent: MarketPulseUtils.toFiniteNumber(usdt?.diff24d) ?? 0
+      };
+    }
+  } catch (_err) {
+    // Try next fallback
+  }
+
+  // 2. Wallex public endpoint (Toman)
+  try {
+    const data = await fetchJson(WALLEX_URL, 6000);
+    const stats = data?.result?.symbols?.USDTTMN?.stats;
+    const price = MarketPulseUtils.toFiniteNumber(stats?.lastPrice);
+    if (price !== null && price > 1000) {
+      return {
+        usdtToman: Math.round(price),
+        changePercent: MarketPulseUtils.toFiniteNumber(stats?.["24h_ch"]) ?? 0
+      };
+    }
+  } catch (_err) {
+    // Try next fallback
+  }
+
+  // 3. Nobitex public endpoint (Rial -> Toman)
+  try {
+    const data = await fetchJson(NOBITEX_URL, 6000);
+    const stats = data?.stats?.["usdt-rls"];
+    const rial = MarketPulseUtils.toFiniteNumber(stats?.latest);
+    if (rial !== null && rial > 10000) {
+      return {
+        usdtToman: Math.floor(rial / 10),
+        changePercent: MarketPulseUtils.toFiniteNumber(stats?.dayChange) ?? 0
+      };
+    }
+  } catch (_err) {
+    // All fallbacks exhausted
+  }
+
+  throw new Error("All Toman rate sources unavailable.");
+}
+
 async function fetchToman(apiKey) {
-  if (!apiKey) {
-    return null;
+  if (apiKey) {
+    try {
+      const url = new URL(BRSAPI_BASE_URL);
+      url.searchParams.set("key", apiKey);
+
+      const data = await fetchJson(url.toString());
+      const currencies = Array.isArray(data?.currency) ? data.currency : [];
+      const usdt = currencies.find((item) => item?.symbol === "USDT_IRT");
+      const toman = MarketPulseUtils.toFiniteNumber(usdt?.price);
+
+      if (toman !== null && toman > 0) {
+        return {
+          usdtToman: toman,
+          changePercent: MarketPulseUtils.toFiniteNumber(usdt?.change_percent)
+        };
+      }
+    } catch (_error) {
+      // Fall through to public multi-exchange fallback
+    }
   }
 
-  const url = new URL(BRSAPI_BASE_URL);
-  url.searchParams.set("key", apiKey);
-
-  const data = await fetchJson(url.toString());
-  const currencies = Array.isArray(data?.currency) ? data.currency : [];
-  const usdt = currencies.find((item) => item?.symbol === "USDT_IRT");
-  const toman = MarketPulseUtils.toFiniteNumber(usdt?.price);
-
-  if (toman === null) {
-    throw new Error("USDT_IRT was not present in the BRSAPI response.");
-  }
-
-  return {
-    usdtToman: toman,
-    changePercent: MarketPulseUtils.toFiniteNumber(usdt?.change_percent)
-  };
+  return await fetchFallbackToman();
 }
 
 async function updateBadge(gold) {
@@ -156,10 +210,8 @@ async function refreshMarketData() {
   } else {
     const reason = requestFailureLabel(cryptoResult.reason);
     if (previousCache.crypto) {
-      // Keep the last confirmed crypto snapshot during temporary outages or rate limits.
       cache.crypto = previousCache.crypto;
     }
-    // A 429 is expected rate limiting, so avoid turning it into a noisy popup error.
     if (reason !== "HTTP 429") {
       cache.errors.crypto = reason;
     }
@@ -168,7 +220,11 @@ async function refreshMarketData() {
   if (tomanResult.status === "fulfilled" && tomanResult.value) {
     cache.toman = tomanResult.value;
   } else if (tomanResult.status === "rejected") {
-    cache.errors.toman = "unavailable";
+    if (previousCache.toman) {
+      cache.toman = previousCache.toman;
+    } else {
+      cache.errors.toman = "unavailable";
+    }
   }
 
   await chrome.storage.local.set({ [CACHE_KEY]: cache });
